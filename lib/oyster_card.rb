@@ -23,21 +23,19 @@ attr_reader :balance, :entry_station, :journey_history, :single_journey
   end
 
   def touch_in(station)
-    if single_journey.nil?
-      self.single_journey = Journey.new
-    elsif journey_complete?
+    if single_journey.nil? || journey_complete?
       self.single_journey = Journey.new
     else
       calculate_fare
       self.single_journey = Journey.new
     end
     fail "Cannot touch in: insufficient funds. Please top up" if balance_insufficient?
-    #calculate_fare
     single_journey.add_start(station)
   end
 
   def touch_out(station)
     if single_journey.nil? || journey_complete?
+      self.single_journey = Journey.new
       calculate_fare
     else
       single_journey.add_finish(station)

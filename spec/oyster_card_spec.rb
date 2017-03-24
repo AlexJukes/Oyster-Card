@@ -88,7 +88,7 @@ end
 
     it "will deduct penalty fare if user touches out without touching in" do
       oyster_card.touch_out(bermondsey)
-      expect(oyster_card.balance).to eq (OysterCard::INITIAL_BALANCE - Journey::PENALTY_FARE)
+      expect(oyster_card.balance).to eq (OysterCard::INITIAL_BALANCE + Journey::PENALTY_FARE)
     end
   end
 
