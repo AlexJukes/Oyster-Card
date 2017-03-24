@@ -1,4 +1,4 @@
-
+# Responsible topping up, holding balance, and touching in and out.
 
 require './lib/journey.rb'
 require './lib/station.rb'
@@ -8,13 +8,13 @@ class OysterCard
   MAXIMUM_BALANCE = 90
   INITIAL_BALANCE = 5
 
-attr_reader :balance, :entry_station, :journey_history, :single_journey
+attr_reader :balance, :journey_log
+# :entry_station, :journey_history, :single_journey,
 
   def initialize
     @balance = INITIAL_BALANCE
-    # @entry_station = nil
-    @journey_history = []
-
+    @journey_log = JourneyLog.new
+    # @journey_history = []
   end
 
   def top_up(amount_of_money)
@@ -22,43 +22,44 @@ attr_reader :balance, :entry_station, :journey_history, :single_journey
     self.balance += amount_of_money
   end
 
+  # changed this
   def touch_in(station)
-    if single_journey.nil? || journey_complete?
-      self.single_journey = Journey.new
-    else
-      calculate_fare
-      self.single_journey = Journey.new
-    end
+    calculate_fare unless journey_complete?
     fail "Cannot touch in: insufficient funds. Please top up" if balance_insufficient?
-    single_journey.add_start(station)
+    journey_log.start(station)
   end
 
   def touch_out(station)
-    if single_journey.nil? || journey_complete?
-      self.single_journey = Journey.new
+    if journey_complete?
       calculate_fare
     else
-      single_journey.add_finish(station)
+      # self.single_journey = Journey.new
+      # calculate_fare
+      journey_log.add_finish(station)
       calculate_fare
-      finish_trip
+      # finish_trip
     end
   end
 
-  def finish_trip
-    journey_history << single_journey
-  end
-
-  def calculate_fare
-    self.balance += single_journey.fare
-  end
 
   def journey_complete?
-    !single_journey.in_journey?
+      !!journey_log.single_journey
   end
+
+  #
+  # def finish_trip
+  #   journey_history << single_journey
+  # end
+
+  def calculate_fare
+    self.balance += journey_log.single_journey.fare
+  end
+
 
   private
 
-  attr_writer :balance, :entry_station, :single_journey
+  attr_writer :balance
+  #, :entry_station, :single_journey
 
   def balance_exceeded?(amount_of_money)
     (balance + amount_of_money) > MAXIMUM_BALANCE

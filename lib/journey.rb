@@ -1,15 +1,15 @@
 
-# CREATE METHOD TO CALCULATE FARE
+# Be responsible for storing information on single journeys, including beginning and end station (where available)
 
 class Journey
 
   MINIMUM_FARE = -1
   PENALTY_FARE = -6
 
-  attr_reader :fare
+  attr_reader :fare, :complete
 
   def initialize
-    @trip = {:start => nil, :finish => nil}
+    @trip = {}
     @fare = PENALTY_FARE
   end
 
@@ -24,11 +24,7 @@ class Journey
     self.fare = MINIMUM_FARE
   end
 
-  def in_journey?
-    !trip[:finish]
-  end
-
   private
 
-  attr_writer :start, :finish, :trip, :fare
+  attr_writer :start, :finish, :trip, :fare, :complete
 end

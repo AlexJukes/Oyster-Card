@@ -1,4 +1,4 @@
-
+# Responsible for storing station information: name and zone. 
 class Station
 
 attr_reader :name, :zone
